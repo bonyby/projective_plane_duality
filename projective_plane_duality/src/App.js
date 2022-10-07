@@ -6,15 +6,15 @@ export default class App extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      primalElements: ["p(5,8)"]
+      primalObjects: ["p(150,8)", "p(1, 55)", "p(250, 370)"]
     };
   }
 
   render() {
     return (
       <div className="App">
-        <View title="Primal" primalElements={this.state.primalElements} />
-        <View title="Dual" primalElements={this.state.primalElements} />
+        <View title="Primal" objects={this.state.primalObjects} />
+        <View title="Dual" objects={this.state.primalObjects} />
       </div>
     )
   }
