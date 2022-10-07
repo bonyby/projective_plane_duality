@@ -36,8 +36,8 @@ export default class App extends PureComponent {
   render() {
     return (
       <div className="App">
-        <View title="Primal" objects={this.state.primalObjects} />
-        <View title="Dual" objects={this.dualizeObjects(this.state.primalObjects)} />
+        <View title="Primal" width={500} height={500} xMax={10} yMax={10} objects={this.state.primalObjects} />
+        <View title="Dual" width={500} height={500} xMax={10} yMax={10} objects={this.dualizeObjects(this.state.primalObjects)} />
       </div>
     )
   }

@@ -4,9 +4,14 @@ export default class View extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            canvasCtx: null
+            canvasCtx: null,
+            width: this.props.width,
+            height: this.props.height,
+            xMax: this.props.xMax,
+            yMax: this.props.yMax
         };
         this.canvasRef = React.createRef();
+        this.origo = [this.state.width / 2, this.state.height / 2];
     }
 
     componentDidMount() {
@@ -19,12 +24,41 @@ export default class View extends PureComponent {
         return [str.slice(0, i), str.slice(i)];
     }
 
-    drawObjects() {
+    resetCanvas() {
         if (this.state.canvasCtx == null) return;
 
         const ctx = this.state.canvasCtx;
         ctx.clearRect(0, 0, this.canvasRef.width, this.canvasRef.height);
+    }
 
+    drawAxes() {
+        if (this.state.canvasCtx == null) return;
+        const ctx = this.state.canvasCtx;
+        
+        const[origoX, origoY] = this.origo;
+
+        // Draw the axes
+        ctx.beginPath()
+        ctx.strokeWidth = 1;
+        ctx.moveTo(0, origoY);
+        ctx.lineTo(this.state.width, origoY);
+        ctx.stroke()
+        ctx.moveTo(origoX, 0);
+        ctx.lineTo(origoX, this.state.height);
+        ctx.stroke();
+
+        // Draw tick marks
+        ctx.font = "12px Arial";
+        ctx.fillText("(0,0)", origoX + 2, origoY - 5);
+        ctx.fillText("(0," + this.state.yMax + ")", origoX + 2, 12);
+        ctx.fillText("(0,-" + this.state.yMax + ")", origoX + 2, this.state.height - 3);
+        ctx.fillText("(-" + this.state.xMax + ", 0)", 0, origoY - 5);
+        ctx.fillText("(" + this.state.xMax + ", 0)", this.state.width - 35, origoY - 5);
+    }
+
+    drawObjects() {
+        if (this.state.canvasCtx == null) return;
+        const ctx = this.state.canvasCtx;
 
         this.props.objects.forEach(o => {
             // const [type, val] = this.split(o, 1);
@@ -58,12 +92,14 @@ export default class View extends PureComponent {
     }
 
     render() {
+        this.resetCanvas();
+        this.drawAxes();
         this.drawObjects();
 
         return (
             <div className="View">
                 <h1>{this.props.title}</h1>
-                <canvas ref={this.canvasRef} width={500} height={500}></canvas>
+                <canvas ref={this.canvasRef} width={this.state.width} height={this.state.height}></canvas>
             </div>
         )
     }
