@@ -7,7 +7,8 @@ export default class App extends PureComponent {
     super(props);
     this.state = {
       // primalObjects: ["p(150,8)", "p(1, 55)", "p(250, 370)"]
-      primalObjects: [["p", 2, -50]]
+      // primalObjects: [["p", 1, 1], ["p", 3, 3], ["p", 6, 6], ["p", 9, 9], ["p", -1, -1], ["p", -3, -3], ["p", -6, -6], ["p", -9, -9]]
+      primalObjects: [["p", 0, 0]]
     };
   }
 

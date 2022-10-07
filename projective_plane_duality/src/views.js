@@ -8,15 +8,22 @@ export default class View extends PureComponent {
             width: this.props.width,
             height: this.props.height,
             xMax: this.props.xMax,
-            yMax: this.props.yMax
+            yMax: this.props.yMax,
+            xScale: this.props.width / (this.props.xMax * 2),
+            yScale: this.props.height / (this.props.yMax * 2)
         };
         this.canvasRef = React.createRef();
         this.origo = [this.state.width / 2, this.state.height / 2];
     }
 
     componentDidMount() {
+        const canvas = this.canvasRef;
+        const ctx = canvas.current.getContext("2d");
+        ctx.translate(150, 150);
+        // ctx.transform(1, 0, 0, -1, 0, this.state.height);
+
         this.setState({
-            canvasCtx: this.canvasRef.current.getContext("2d")
+            canvasCtx: ctx
         });
     }
 
@@ -24,18 +31,35 @@ export default class View extends PureComponent {
         return [str.slice(0, i), str.slice(i)];
     }
 
+    // Scales x and y and offsets based on origo
+    getRelativePosition(x, y) {
+        const [origoX, origoY] = this.origo;
+        const newX = (x * this.state.xScale);
+        const newY = (-y * this.state.yScale) // negate y-coord to flip image horizontally
+        // return [newX, newY]
+        return [x, y];
+    }
+
+    // Only scales x and y
+    getScaledPosition(x, y) {
+        const newX = x * this.state.xScale;
+        const newY = (-y * this.state.yScale) // negate y-coord to flip image horizontally
+        return [newX, newY];
+    }
+
     resetCanvas() {
         if (this.state.canvasCtx == null) return;
 
         const ctx = this.state.canvasCtx;
-        ctx.clearRect(0, 0, this.canvasRef.width, this.canvasRef.height);
+        // ctx.transform(1, 0, 0, -1, 0, this.state.height);
+        ctx.clearRect(0, 0, this.state.width, this.state.height);
     }
 
     drawAxes() {
         if (this.state.canvasCtx == null) return;
         const ctx = this.state.canvasCtx;
-        
-        const[origoX, origoY] = this.origo;
+
+        const [origoX, origoY] = this.origo;
 
         // Draw the axes
         ctx.beginPath()
@@ -69,19 +93,23 @@ export default class View extends PureComponent {
 
             switch (type) {
                 case "p":
-                    const x = o[1];
-                    const y = o[2];
-                    ctx.fillRect(x, y, 5, 5);
+                    const [x, y] = this.getRelativePosition(o[1], o[2]);
+                    console.log("x: " + x + ", y: " + y);
+                    ctx.fillRect(x - 2, y - 2, 5, 5);
                     break;
                 case "l":
+                    // const [_, p_y] = this.getRelativePosition(o[1], o[2]);
+                    // TODO: this is wrong :(
+                    const [_, p_y] = this.getScaledPosition(o[1], o[2]);
                     const p_x = o[1];
-                    const p_y = o[2];
-                    const start_y = -1000 * p_x + p_y;
-                    const end_y = 1000 * p_x + p_y;
+                    const start_x = -(this.state.width / 2) + this.origo[0];
+                    const start_y = start_x * p_x + p_y;
+                    const end_x = (this.state.width / 2) + this.origo[0];
+                    const end_y = end_x * p_x + p_y;
                     ctx.beginPath();
                     ctx.strokeWidth = 2;
-                    ctx.moveTo(-1000, start_y);
-                    ctx.lineTo(1000, end_y);
+                    ctx.moveTo(start_x, start_y);
+                    ctx.lineTo(end_x, end_y);
                     ctx.stroke();
                     break;
                 default:
