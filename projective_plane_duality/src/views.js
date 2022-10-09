@@ -19,7 +19,9 @@ export default class View extends PureComponent {
     componentDidMount() {
         const canvas = this.canvasRef;
         const ctx = canvas.current.getContext("2d");
-        ctx.translate(150, 150);
+        // ctx.scale(1, -1);
+        // ctx.translate(1, 50);
+        ctx.setTransform(1, 0, 0, -1, this.state.width/2, this.state.height/2);
         // ctx.transform(1, 0, 0, -1, 0, this.state.height);
 
         this.setState({
@@ -31,19 +33,10 @@ export default class View extends PureComponent {
         return [str.slice(0, i), str.slice(i)];
     }
 
-    // Scales x and y and offsets based on origo
-    getRelativePosition(x, y) {
-        const [origoX, origoY] = this.origo;
-        const newX = (x * this.state.xScale);
-        const newY = (-y * this.state.yScale) // negate y-coord to flip image horizontally
-        // return [newX, newY]
-        return [x, y];
-    }
-
     // Only scales x and y
     getScaledPosition(x, y) {
         const newX = x * this.state.xScale;
-        const newY = (-y * this.state.yScale) // negate y-coord to flip image horizontally
+        const newY = y * this.state.yScale;
         return [newX, newY];
     }
 
@@ -61,23 +54,25 @@ export default class View extends PureComponent {
 
         const [origoX, origoY] = this.origo;
 
-        // Draw the axes
         ctx.beginPath()
         ctx.strokeWidth = 1;
-        ctx.moveTo(0, origoY);
-        ctx.lineTo(this.state.width, origoY);
+        ctx.moveTo(-this.state.width / 2, 0);
+        ctx.lineTo(this.state.width / 2, 0);
         ctx.stroke()
-        ctx.moveTo(origoX, 0);
-        ctx.lineTo(origoX, this.state.height);
+        ctx.moveTo(0, -this.state.height / 2);
+        ctx.lineTo(0, this.state.height / 2);
         ctx.stroke();
 
         // Draw tick marks
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.font = "12px Arial";
         ctx.fillText("(0,0)", origoX + 2, origoY - 5);
         ctx.fillText("(0," + this.state.yMax + ")", origoX + 2, 12);
         ctx.fillText("(0,-" + this.state.yMax + ")", origoX + 2, this.state.height - 3);
         ctx.fillText("(-" + this.state.xMax + ", 0)", 0, origoY - 5);
         ctx.fillText("(" + this.state.xMax + ", 0)", this.state.width - 35, origoY - 5);
+        ctx.restore();
     }
 
     drawObjects() {
@@ -93,18 +88,15 @@ export default class View extends PureComponent {
 
             switch (type) {
                 case "p":
-                    const [x, y] = this.getRelativePosition(o[1], o[2]);
-                    console.log("x: " + x + ", y: " + y);
+                    const [x, y] = this.getScaledPosition(o[1], o[2]);
                     ctx.fillRect(x - 2, y - 2, 5, 5);
                     break;
                 case "l":
-                    // const [_, p_y] = this.getRelativePosition(o[1], o[2]);
-                    // TODO: this is wrong :(
                     const [_, p_y] = this.getScaledPosition(o[1], o[2]);
                     const p_x = o[1];
-                    const start_x = -(this.state.width / 2) + this.origo[0];
+                    const start_x = -(this.state.width / 2);
                     const start_y = start_x * p_x + p_y;
-                    const end_x = (this.state.width / 2) + this.origo[0];
+                    const end_x = (this.state.width / 2);
                     const end_y = end_x * p_x + p_y;
                     ctx.beginPath();
                     ctx.strokeWidth = 2;
