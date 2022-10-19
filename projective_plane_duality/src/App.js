@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import './App.css';
 import View from './views';
 
-export default class App extends PureComponent {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,12 +11,22 @@ export default class App extends PureComponent {
       // primalObjects: [["l", 1, -1], ["p", -1, -1], ["p", -0.8, -1.5], ["p", 3, 1], ["p", 4, -2.5], ["p", 0.5, -2]]
       primalObjects: []
     };
+    
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
 
-    window.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        this.addObject();
-      }
-    });
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress)
+  }
+
+  handleKeyPress(event) {
+    if (event.key === "Enter") {
+      this.addObject();
+    }
   }
 
   addObject() {
@@ -28,9 +38,9 @@ export default class App extends PureComponent {
     if (!valid) { return; }
 
     input.value = "";
-    console.log("object: " + object);
-    const newObjects = this.state.primalObjects.push(object);
-    console.log("newObjects: " + newObjects);
+
+    const newObjects = this.state.primalObjects.slice();
+    newObjects.push(object);
     this.setState({
       primalObjects: newObjects
     });
@@ -84,3 +94,5 @@ export default class App extends PureComponent {
     )
   }
 }
+
+export default App;
