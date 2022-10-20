@@ -21,7 +21,7 @@ export default class View extends PureComponent {
         const ctx = canvas.current.getContext("2d");
         // ctx.scale(1, -1);
         // ctx.translate(1, 50);
-        ctx.setTransform(1, 0, 0, -1, this.state.width/2, this.state.height/2);
+        ctx.setTransform(1, 0, 0, -1, this.state.width / 2, this.state.height / 2);
         // ctx.transform(1, 0, 0, -1, 0, this.state.height);
 
         this.setState({
@@ -44,8 +44,7 @@ export default class View extends PureComponent {
         if (this.state.canvasCtx == null) return;
 
         const ctx = this.state.canvasCtx;
-        // ctx.transform(1, 0, 0, -1, 0, this.state.height);
-        ctx.clearRect(0, 0, this.state.width, this.state.height);
+        ctx.clearRect(-this.state.width / 2, -this.state.height / 2, this.state.width, this.state.height);
     }
 
     drawAxes() {

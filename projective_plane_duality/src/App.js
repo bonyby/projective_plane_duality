@@ -11,7 +11,7 @@ class App extends React.Component {
       // primalObjects: [["l", 1, -1], ["p", -1, -1], ["p", -0.8, -1.5], ["p", 3, 1], ["p", 4, -2.5], ["p", 0.5, -2]]
       primalObjects: []
     };
-    
+
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
@@ -82,11 +82,47 @@ class App extends React.Component {
     return objects;
   }
 
+  listElementClicked(index) {
+    // Add element to input
+    const element = this.state.primalObjects[index];
+    document.getElementById("input").value = this.objectToString(element);
+    
+    // Remove from primal objects
+    const newObjects = this.state.primalObjects.slice();
+    newObjects.splice(index, 1);
+    this.setState({
+      primalObjects: newObjects
+    });
+  }
+
+  objectToString(object) {
+    switch(object[0]) {
+      case "p":
+        return "p(" + object[1] + "," + object[2] + ")";
+      case "l":
+        return "l(" + object[1] + "," + object[2] + ")";
+      default:
+        return "sadness and despair"
+    }
+  }
+
+  getListElements() {
+    const elements = this.state.primalObjects.map((element, index) => {
+      return <li key={element[0] + index} onClick={() => this.listElementClicked(index)}>{this.objectToString(element)}</li>;
+    });
+    return elements;
+  }
+
   render() {
+    const listElements = this.getListElements();
+
     return (
       <div className="App">
         <div id="inputContainer">
           <input id="input" type="text" placeholder="e.g.: p(1,3)"></input>
+          <ul id="inputList">
+            {listElements}
+          </ul>
         </div>
         <View title="Primal" width={500} height={500} xMax={10} yMax={10} objects={this.state.primalObjects} />
         <View title="Dual" width={500} height={500} xMax={10} yMax={10} objects={this.dualizeObjects(this.state.primalObjects)} />
