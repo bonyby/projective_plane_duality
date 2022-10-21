@@ -89,7 +89,7 @@ class App extends React.Component {
     // Add element to input
     const element = this.state.primalObjects[index];
     document.getElementById("input").value = this.objectToString(element);
-    
+
     // Remove from primal objects
     const newObjects = this.state.primalObjects.slice();
     newObjects.splice(index, 1);
@@ -99,7 +99,7 @@ class App extends React.Component {
   }
 
   objectToString(object) {
-    switch(object[0]) {
+    switch (object[0]) {
       case "p":
         return "p(" + object[1] + "," + object[2] + ")";
       case "l":
@@ -121,8 +121,21 @@ class App extends React.Component {
 
     return (
       <div className="App">
+        <div id="howToContainer">
+          <h1>How To!</h1>
+          <h2>Input Commands:</h2>
+          <ul>
+            <li>Point: p(x,y) - <i>e.g. p(1,3)</i></li>
+            <li>Line: l(a,b) - <i>e.g. l(2,1)</i></li>
+          </ul>
+          <h2>Editing:</h2>
+          <p>To edit an object, simply click on it in the input list.
+            This removes the item and adds it back to the input field for editing.</p>
+        </div>
         <div id="inputContainer">
+          <h1>Input</h1>
           <input id="input" type="text" placeholder="e.g.: p(1,3)"></input>
+          <h2>Objects:</h2>
           <ul id="inputList">
             {listElements}
           </ul>
