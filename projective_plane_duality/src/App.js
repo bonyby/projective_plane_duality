@@ -52,6 +52,7 @@ class App extends React.Component {
     if (!validTypes.includes(type)) { return [false, []]; }
 
     // TODO: Do some checks based on type
+    
     // Get values of the input text
     const regex = /\(|\)|\s/ig; // Regex (global) to remove all '(', ')' and ' '
     const vals = txt.slice(1).replaceAll(regex, "").split(",");
