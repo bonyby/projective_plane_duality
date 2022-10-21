@@ -47,12 +47,17 @@ class App extends React.Component {
   }
 
   getInput(txt) {
+    const type = txt[0]
     const validTypes = ["p", "l"];
-    if (!validTypes.includes(txt[0])) { return [false, []]; }
+    if (!validTypes.includes(type)) { return [false, []]; }
 
     // TODO: Do some checks based on type
 
-    return [true, [txt[0], txt[2], txt[4]]];
+    // Get values of the input text
+    const regex = /\(|\)|\s/ig; // Regex (global) to remove all '(', ')' and ' '
+    const vals = txt.slice(1).replaceAll(regex, "").split(",");
+
+    return [true, [type, vals[0], vals[1]]];
   }
 
   dualizeObjects() {
@@ -62,8 +67,6 @@ class App extends React.Component {
       const type = o[0];
       switch (type) {
         case "p":
-          // const regex = /\(|\)|\s/ig; // Regex (global) to remove all '(', ')' and ' '
-          // const [x, y] = val.replaceAll(regex, "").split(",");
           const x = o[1];
           const y = o[2];
           objects.push(["l", x, -y]) // p(p_x,p_y) => y=p_x*x-p_y
