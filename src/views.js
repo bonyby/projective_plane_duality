@@ -91,8 +91,8 @@ export default class View extends PureComponent {
                     ctx.fillRect(x - 2, y - 2, 5, 5);
                     break;
                 case "l":
-                    const [_, p_y] = this.getScaledPosition(o[1], o[2]);
-                    const p_x = o[1];
+                    let [p_x, p_y] = this.getScaledPosition(o[1], o[2]);
+                    p_x = o[1];
                     const start_x = -(this.state.width / 2);
                     const start_y = start_x * p_x + p_y;
                     const end_x = (this.state.width / 2);
