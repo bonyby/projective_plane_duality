@@ -48,15 +48,16 @@ class App extends React.Component {
 
   getInput(txt) {
     const type = txt[0]
-    const validTypes = ["p", "l"];
+    const validTypes = ["p", "l", "s"];
     if (!validTypes.includes(type)) { return [false, []]; }
 
     // TODO: Do some checks based on type
     // Get values of the input text
     const regex = /\(|\)|\s/ig; // Regex (global) to remove all '(', ')' and ' '
     const vals = txt.slice(1).replaceAll(regex, "").split(",");
+    const result = [type].concat(vals);
 
-    return [true, [type, vals[0], vals[1]]];
+    return [true, result];
   }
 
   dualizeObjects() {
@@ -74,6 +75,13 @@ class App extends React.Component {
           const a = o[1];
           const b = o[2];
           objects.push(["p", a, -b]);
+          break;
+        case "s":
+          const x1 = o[1];
+          const y1 = o[2];
+          const x2 = o[3];
+          const y2 = o[4];
+          objects.push(["w", x1, -y1, x2, -y2]);
           break;
         default:
           console.log("SADNESS!: " + o);
@@ -98,14 +106,10 @@ class App extends React.Component {
   }
 
   objectToString(object) {
-    switch (object[0]) {
-      case "p":
-        return "p(" + object[1] + "," + object[2] + ")";
-      case "l":
-        return "l(" + object[1] + "," + object[2] + ")";
-      default:
-        return "sadness and despair"
-    }
+    const [type, ...vals] = object;
+
+    const valsString = vals.slice(1).reduce((str, val) => str + "," + val, vals[0]);
+    return type + "(" + valsString + ")";
   }
 
   getListElements() {
@@ -126,6 +130,7 @@ class App extends React.Component {
           <ul>
             <li>Point: p(x,y) - <i>e.g. p(1,3)</i></li>
             <li>Line: l(a,b) - <i>e.g. l(2,1)</i></li>
+            <li>Segment: s(x1,y1,x2,y2)<br></br> - <i>e.g. l(1,1,2,2)</i></li>
           </ul>
           <h2>Editing:</h2>
           <p>To edit an object, simply click on it in the input list.
