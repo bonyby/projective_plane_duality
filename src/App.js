@@ -130,7 +130,7 @@ class App extends React.Component {
           <ul>
             <li>Point: p(x,y) - <i>e.g. p(1,3)</i></li>
             <li>Line: l(a,b) - <i>e.g. l(2,1)</i></li>
-            <li>Segment: s(x1,y1,x2,y2)<br></br> - <i>e.g. l(1,1,2,2)</i></li>
+            <li>Segment: s(x1,y1,x2,y2)<br></br> - <i>e.g. s(1,1,2,2)</i></li>
           </ul>
           <h2>Editing:</h2>
           <p>To edit an object, simply click on it in the input list.
